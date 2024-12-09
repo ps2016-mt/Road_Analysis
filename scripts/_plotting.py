@@ -1,23 +1,30 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pandas as pd
 
 
-def plot_distribution(df, column, figsize=(10, 6), rotation=45):
+def plot_distribution_share(df, column, figsize=(10, 6), rotation=45):
     """
-    Plot the distribution of a categorical variable with improved axis readability.
-
-    Parameters:
-        df (pd.DataFrame): The dataframe containing the data.
-        column (str): The column to plot.
-        figsize (tuple): Size of the figure.
-        rotation (int): Angle for rotating x-axis labels.
+    Plot the distribution of a categorical variable as a share (percentage)
+    with improved axis readability.
+    Parameters: df (pd.DataFrame): The dataframe containing the data.
+                column (str): The column to plot.
+                figsize (tuple): Size of the figure.
+                rotation (int): Angle for rotating x-axis labels.
     """
+    # Calculate the percentage distribution
+    value_counts = df[column].value_counts(normalize=True) * 100
+    percentages = value_counts.sort_index()
+
     plt.figure(figsize=figsize)
-    sns.countplot(x=column, data=df, order=df[column].value_counts().index)
-    plt.title(f"Distribution of {column}")
+    sns.barplot(x=percentages.index,
+                y=percentages.values,
+                order=value_counts.index)
+    plt.title(f"Distribution of {column} (as Share)")
     plt.xlabel(column)
-    plt.ylabel("Count")
-    plt.xticks(rotation=rotation, ha="right")  # Rotate x-axis labels for readability
+    plt.ylabel("Percentage")
+    plt.xticks(rotation=rotation,
+               ha="right")
     plt.tight_layout()  # Adjust layout to fit labels
     plt.show()
 
@@ -38,10 +45,10 @@ def plot_feature_vs_target(df, feature, target, kind="box", rotation=45):
 
     Parameters:
         df (pd.DataFrame): The dataset.
-        feature (str): The feature (independent variable) to plot.
-        target (str): The target variable (dependent variable) to compare against.
-        kind (str): The type of plot ("box" for boxplot, "bar" for barplot). Default is "box".
-        rotation (int): The rotation angle for the x-axis labels. Default is 45.
+        feature (str): The feature to plot.
+        target (str): The target variable to compare against.
+        kind (str): The type of plot.
+        rotation (int): The rotation angle for the x-axis labels.
     """
     plt.figure(figsize=(10, 6))
     if kind == "box":
@@ -55,48 +62,79 @@ def plot_feature_vs_target(df, feature, target, kind="box", rotation=45):
     plt.show()
 
 
-def plot_feature_distribution(df, feature):
-    """
-    Plot the distribution of a numerical feature.
-    """
-    plt.figure(figsize=(8, 5))
-    sns.histplot(df[feature].dropna(), kde=True, bins=30)
-    plt.title(f"Distribution of {feature}")
-    plt.xlabel(feature)
-    plt.ylabel("Frequency")
-    plt.show()
-
-
-def plot_accidents_by_day_of_week(data):
+def plot_accidents_by_day_of_week(data, datetime_col="DateTime"):
     """
     Plot the distribution of accidents by day of the week.
+
+    Parameters:
+        data (pd.DataFrame): The input DataFrame.
+        datetime_col (str): The name of the datetime column.
     """
+    if datetime_col not in data.columns:
+        raise KeyError(f"{datetime_col} column not found in DataFrame.")
+
+    # Convert to datetime if not already
+    if not pd.api.types.is_datetime64_any_dtype(data[datetime_col]):
+        print(f"Converting {datetime_col} to pandas datetime format...")
+        data[datetime_col] = pd.to_datetime(data[datetime_col],
+                                            errors="coerce")
+
+    # Drop rows with null DateTime values
+    data = data.dropna(subset=[datetime_col])
+
+    # Extract day of the week
+    data["Day_of_Week"] = data[datetime_col].dt.dayofweek
+
+    # Ensure "Day_of_Week" exists in DataFrame
+    if "Day_of_Week" not in data.columns:
+        raise KeyError("Column 'Day_of_Week' not found after transformation.")
+
+    # Plot
     plt.figure(figsize=(10, 5))
-    data["Day_of_Week"] = data["DateTime"].dt.dayofweek  # 0 = Monday, 6 = Sunday
     sns.countplot(x="Day_of_Week", data=data, order=range(7))
-    plt.title("Accidents Distribution by Day of Week")
-    plt.xticks(range(7), labels=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
+    plt.title("Accidents Distribution by Day")
+    plt.xticks(range(7), labels=["Mon", "Tue",
+                                 "Wed", "Thu",
+                                 "Fri", "Sat", "Sun"])
     plt.xlabel("Day of Week")
     plt.ylabel("Count")
     plt.tight_layout()
     plt.show()
 
 
-def plot_accidents_by_month(data):
+def plot_accidents_by_month(data, datetime_col="DateTime"):
     """
-    Plot the distribution of accidents by month with proper alignment and axis labeling.
+    Plot the distribution of accidents by month.
+
+    Parameters:
+        data (pd.DataFrame): The input DataFrame.
+        datetime_col (str): The name of the datetime column.
     """
+    if datetime_col not in data.columns:
+        raise KeyError(f"{datetime_col} column not found in DataFrame.")
+
+    # Convert to datetime if not already
+    if not pd.api.types.is_datetime64_any_dtype(data[datetime_col]):
+        print(f"Converting {datetime_col} to pandas datetime format...")
+        data[datetime_col] = pd.to_datetime(data[datetime_col],
+                                            errors="coerce")
+
+    # Drop rows with null DateTime values
+    data = data.dropna(subset=[datetime_col])
+
+    # Extract month
+    data["Month"] = data[datetime_col].dt.month
+
+    # Ensure "Month" exists in DataFrame
+    if "Month" not in data.columns:
+        raise KeyError("Column 'Month' not found after transformation.")
+
+    # Plot
     plt.figure(figsize=(12, 6))
-    # Ensure the 'Month' column is extracted
-    data["Month"] = data["DateTime"].dt.month
-
-    # Use sns.countplot with fixed order
     sns.countplot(x="Month", data=data, order=range(1, 13))
-
-    # Properly label the x-axis
-    plt.title("Accidents Distribution by Month", fontsize=16)
+    plt.title("Accidents Distribution by Month")
     plt.xticks(
-        ticks=range(12),  # Ensure alignment with the month numbers
+        ticks=range(12),
         labels=[
             "Jan",
             "Feb",
@@ -111,20 +149,42 @@ def plot_accidents_by_month(data):
             "Nov",
             "Dec",
         ],
-        fontsize=12,
     )
-    plt.xlabel("Month", fontsize=14)
-    plt.ylabel("Count", fontsize=14)
+    plt.xlabel("Month")
+    plt.ylabel("Count")
     plt.tight_layout()
     plt.show()
 
 
-def plot_accidents_by_time(data):
+def plot_accidents_by_time(data, datetime_col="DateTime"):
     """
     Plot the distribution of accidents by time of day (hour).
+
+    Parameters:
+        data (pd.DataFrame): The input DataFrame.
+        datetime_col (str): The name of the datetime column.
     """
+    if datetime_col not in data.columns:
+        raise KeyError(f"{datetime_col} column not found in DataFrame.")
+
+    # Convert to datetime if not already
+    if not pd.api.types.is_datetime64_any_dtype(data[datetime_col]):
+        print(f"Converting {datetime_col} to datetime format...")
+        data[datetime_col] = pd.to_datetime(data[datetime_col],
+                                            errors="coerce")
+
+    # Drop rows with null DateTime values
+    data = data.dropna(subset=[datetime_col])
+
+    # Extract hour
+    data["Hour"] = data[datetime_col].dt.hour
+
+    # Ensure "Hour" exists in DataFrame
+    if "Hour" not in data.columns:
+        raise KeyError("Column 'Hour' not found after transformation.")
+
+    # Plot
     plt.figure(figsize=(10, 5))
-    data["Hour"] = data["DateTime"].dt.hour
     sns.countplot(x="Hour", data=data, order=range(0, 24))
     plt.title("Accidents Distribution by Hour")
     plt.xticks(range(0, 24))

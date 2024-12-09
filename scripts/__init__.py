@@ -1,19 +1,31 @@
-import sys
-import os
-
-# Add parent directory to sys.path
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, parent_dir)
-
-# Import modules from the parent or sibling directories
 from scripts._load_data import load_data
-from scripts._preprocessing import drop_unneeded_columns
-from scripts._preprocessing import handle_missing_values
-from scripts._preprocessing import handle_outliers
-from scripts._plotting import plot_distribution
-from scripts._plotting import plot_feature_distribution
-from scripts._plotting import plot_feature_vs_target
-from scripts._plotting import plot_missing_data
-from scripts._plotting import plot_accidents_by_day_of_week
-from scripts._plotting import plot_accidents_by_month
-from scripts._plotting import plot_accidents_by_time
+from scripts._preprocessing import (
+    analyse_missing_values,
+    drop_unneeded_columns,
+    preprocess_and_plot_correlation,
+    check_unique_values,
+    drop_missing_values,
+)
+from scripts._plotting import (
+    plot_distribution_share,
+    plot_feature_vs_target,
+    plot_missing_data,
+    plot_accidents_by_day_of_week,
+    plot_accidents_by_month,
+    plot_accidents_by_time,
+)
+
+__all__ = [
+    "load_data",
+    "analyse_missing_values",
+    "drop_unneeded_columns",
+    "preprocess_and_plot_correlation",
+    "check_unique_values",
+    "drop_missing_values",
+    "plot_distribution_share",
+    "plot_feature_vs_target",
+    "plot_missing_data",
+    "plot_accidents_by_day_of_week",
+    "plot_accidents_by_month",
+    "plot_accidents_by_time",
+]
