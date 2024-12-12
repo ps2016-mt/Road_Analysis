@@ -130,3 +130,23 @@ def drop_missing_values(df):
     cleaned_df = df.dropna()
     print(f"Original DataFrame had {df.isnull().sum().sum()} missing values.")
     return cleaned_df
+
+def encode_target(df, target_column):
+    """
+    Encode the target variable for use in machine learning models.
+
+    Parameters:
+        df (pd.DataFrame): The dataset containing the target column.
+        target_column (str): The name of the target column to encode.
+
+    Returns:
+        pd.DataFrame: Dataset with the encoded target column.
+        dict: Mapping of original target labels to numerical values.
+    """
+    # Define the mapping
+    target_mapping = {"Slight": 0, "Serious": 1, "Fatal": 2}
+
+    # Encode the target column
+    df[target_column] = df[target_column].map(target_mapping)
+
+    return df, target_mapping
