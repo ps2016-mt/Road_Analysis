@@ -80,10 +80,9 @@ def preprocess_and_plot_correlation(
         fmt=".2f",
         cmap="coolwarm",
         cbar_kws={"label": "Correlation Coefficient"},
-        linewidths=0.5,  # Add grid lines for separation
+        linewidths=0.5,
     )
 
-    # Improve label readability
     plt.xticks(fontsize=10, rotation=45, ha="right")
     plt.yticks(fontsize=10)
     plt.title("Correlation Heatmap of Features", fontsize=16)
@@ -95,17 +94,6 @@ def check_unique_values(df, column=None):
     """
     Check for unique values in a specified column
     or all columns in the DataFrame.
-
-    Parameters:
-        df (pd.DataFrame)
-        column (str): Column to check.
-        If None, checks all columns.
-
-    Returns:
-        dict or pd.Series: A dictionary of column names
-                            and their values
-                            or a Series of unique values
-                            for the specified column.
     """
     if column:
         # Check for unique values in the specified column
@@ -131,6 +119,7 @@ def drop_missing_values(df):
     print(f"Original DataFrame had {df.isnull().sum().sum()} missing values.")
     return cleaned_df
 
+
 def encode_target(df, target_column):
     """
     Encode the target variable for use in machine learning models.
@@ -144,7 +133,7 @@ def encode_target(df, target_column):
         dict: Mapping of original target labels to numerical values.
     """
     # Define the mapping
-    target_mapping = {"Slight": 0, "Serious": 1, "Fatal": 2}
+    target_mapping = {"Slight": 1, "Serious": 2, "Fatal": 3}
 
     # Encode the target column
     df[target_column] = df[target_column].map(target_mapping)

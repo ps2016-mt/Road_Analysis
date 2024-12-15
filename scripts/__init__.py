@@ -16,14 +16,18 @@ from scripts.plotting import (
 )
 from scripts.model_training import (
     load_and_split_data,
+    pipe_preprocessing,
     build_glm_pipeline,
     build_lgbm_pipeline,
     tune_glm_pipeline,
     tune_lgbm_pipeline,
-    evaluate_model
 )
-from scripts.feature_engineering import LogTransform
+from scripts.feature_engineering import (CustomOneHotEncoder,
+                                         CustomStandardScaler)
 from scripts.load_data import load_data
+from scripts.evaluation import (evaluate_model,
+                                plot_predicted_vs_actual_bar,
+                                feature_analysis)
 
 __all__ = [
     "load_data",
@@ -32,7 +36,7 @@ __all__ = [
     "preprocess_and_plot_correlation",
     "check_unique_values",
     "drop_missing_values",
-    "encode_target"
+    "encode_target",
     "plot_distribution_share",
     "plot_feature_vs_target",
     "plot_missing_data",
@@ -42,8 +46,12 @@ __all__ = [
     "load_and_split_data",
     "build_glm_pipeline",
     "build_lgbm_pipeline",
-    "LogTransform",
+    "CustomOneHotEncoder",
+    "CustomStandardScaler",
     "tune_glm_pipeline",
     "tune_lgbm_pipeline",
-    "evaluate_model"
+    "pipe_preprocessing",
+    "evaluate_model",
+    "plot_predicted_vs_actual_bar",
+    "feature_analysis"
 ]

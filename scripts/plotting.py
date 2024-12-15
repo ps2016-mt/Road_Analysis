@@ -6,7 +6,6 @@ import pandas as pd
 def plot_distribution_share(df, column, figsize=(10, 6), rotation=45):
     """
     Plot the distribution of a categorical variable as a share (percentage)
-    with improved axis readability.
     Parameters: df (pd.DataFrame): The dataframe containing the data.
                 column (str): The column to plot.
                 figsize (tuple): Size of the figure.
@@ -23,15 +22,14 @@ def plot_distribution_share(df, column, figsize=(10, 6), rotation=45):
     plt.title(f"Distribution of {column} (as Share)")
     plt.xlabel(column)
     plt.ylabel("Percentage")
-    plt.xticks(rotation=rotation,
-               ha="right")
-    plt.tight_layout()  # Adjust layout to fit labels
+    plt.xticks(rotation=rotation, ha="right")
+    plt.tight_layout()
     plt.show()
 
 
 def plot_missing_data(df):
     """
-    Visualize missing data as a heatmap.
+    Visualise missing data as a heatmap.
     """
     plt.figure(figsize=(12, 8))
     sns.heatmap(df.isnull(), cbar=False, cmap="viridis")
@@ -47,8 +45,6 @@ def plot_feature_vs_target(df, feature, target, kind="box", rotation=45):
         df (pd.DataFrame): The dataset.
         feature (str): The feature to plot.
         target (str): The target variable to compare against.
-        kind (str): The type of plot.
-        rotation (int): The rotation angle for the x-axis labels.
     """
     plt.figure(figsize=(10, 6))
     if kind == "box":
@@ -57,18 +53,14 @@ def plot_feature_vs_target(df, feature, target, kind="box", rotation=45):
         sns.countplot(x=feature, hue=target, data=df)
 
     plt.title(f"{feature} vs {target}")
-    plt.xticks(rotation=rotation, ha="right")  # Rotate x-axis labels
-    plt.tight_layout()  # Adjust layout to prevent overlap
+    plt.xticks(rotation=rotation, ha="right")
+    plt.tight_layout()
     plt.show()
 
 
 def plot_accidents_by_day_of_week(data, datetime_col="DateTime"):
     """
     Plot the distribution of accidents by day of the week.
-
-    Parameters:
-        data (pd.DataFrame): The input DataFrame.
-        datetime_col (str): The name of the datetime column.
     """
     if datetime_col not in data.columns:
         raise KeyError(f"{datetime_col} column not found in DataFrame.")
@@ -91,11 +83,17 @@ def plot_accidents_by_day_of_week(data, datetime_col="DateTime"):
 
     # Plot
     plt.figure(figsize=(10, 5))
-    sns.countplot(x="Day_of_Week", data=data, order=range(7))
+    sns.countplot(x="Day_of_Week",
+                  data=data,
+                  order=range(7))
     plt.title("Accidents Distribution by Day")
-    plt.xticks(range(7), labels=["Mon", "Tue",
-                                 "Wed", "Thu",
-                                 "Fri", "Sat", "Sun"])
+    plt.xticks(range(7), labels=["Mon",
+                                 "Tue",
+                                 "Wed",
+                                 "Thu",
+                                 "Fri",
+                                 "Sat",
+                                 "Sun"])
     plt.xlabel("Day of Week")
     plt.ylabel("Count")
     plt.tight_layout()
@@ -105,13 +103,9 @@ def plot_accidents_by_day_of_week(data, datetime_col="DateTime"):
 def plot_accidents_by_month(data, datetime_col="DateTime"):
     """
     Plot the distribution of accidents by month.
-
-    Parameters:
-        data (pd.DataFrame): The input DataFrame.
-        datetime_col (str): The name of the datetime column.
     """
     if datetime_col not in data.columns:
-        raise KeyError(f"{datetime_col} column not found in DataFrame.")
+        raise KeyError(f"{datetime_col} column not found.")
 
     # Convert to datetime if not already
     if not pd.api.types.is_datetime64_any_dtype(data[datetime_col]):
@@ -159,13 +153,9 @@ def plot_accidents_by_month(data, datetime_col="DateTime"):
 def plot_accidents_by_time(data, datetime_col="DateTime"):
     """
     Plot the distribution of accidents by time of day (hour).
-
-    Parameters:
-        data (pd.DataFrame): The input DataFrame.
-        datetime_col (str): The name of the datetime column.
     """
     if datetime_col not in data.columns:
-        raise KeyError(f"{datetime_col} column not found in DataFrame.")
+        raise KeyError(f"{datetime_col} column not found.")
 
     # Convert to datetime if not already
     if not pd.api.types.is_datetime64_any_dtype(data[datetime_col]):

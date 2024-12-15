@@ -1,9 +1,11 @@
+.coverage
 .gitignore
 .pre-commit-config.yaml
 README.md
 __init__.py
 eda_cleaning.ipynb
 environment.yml
+main.ipynb
 pyproject.toml
 setup.cfg
 Road_Analysis.egg-info/PKG-INFO

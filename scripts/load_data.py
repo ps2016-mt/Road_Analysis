@@ -5,8 +5,6 @@ import pandas as pd
 def load_data(data_dir="data"):
     """
     Loads accident data from CSV files, and returns a DataFrame.
-    Parameters:
-        data_dir (str): Path to the directory containing the data files.
     """
     # Define file paths
     accident_file = os.path.join(data_dir, "accident_data.csv")
