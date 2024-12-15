@@ -1,25 +1,65 @@
 import pytest
 import pandas as pd
 import numpy as np
-from scripts.feature_engineering import LogTransform
+from scripts.feature_engineering import (CustomStandardScaler,
+                                         CustomOneHotEncoder)
 
-def test_log_transform():
-    # Create a sample dataframe
-    data = pd.DataFrame({
-        "Speed_limit": [30, 50, 70, 90],
-        "Number_of_Casualties": [0, 1, 2, 3],
-        "Hour_of_Day": [5, 10, 15, 20]
-    })
 
-    expected_output = pd.DataFrame({
-        "Speed_limit": np.log1p([30, 50, 70, 90]),
-        "Number_of_Casualties": np.log1p([0, 1, 2, 3]),
-        "Hour_of_Day": np.log1p([5, 10, 15, 20])
-    })
+@pytest.mark.parametrize(
+    "data, expected",
+    [
+        (
+            pd.DataFrame({"col1": [1, 2, 3],
+                          "col2": [4, 5, 6]}),
+            pd.DataFrame({"col1": [-1.22474487, 0.0, 1.22474487],
+                          "col2": [-1.22474487, 0.0, 1.22474487]}),
+        ),
+        (
+            pd.DataFrame({"col1": [10, 20, 30],
+                          "col2": [100, 200, 300]}),
+            pd.DataFrame({"col1": [-1.22474487, 0.0, 1.22474487],
+                          "col2": [-1.22474487, 0.0, 1.22474487]}),
+        ),
+    ],
+)
+def test_custom_standard_scaler(data: pd.DataFrame, expected: pd.DataFrame):
+    scaler = CustomStandardScaler()
+    transformed_data = scaler.fit_transform(data)
+    np.testing.assert_almost_equal(transformed_data,
+                                   expected.values,
+                                   decimal=6)
 
-    # Initiate the transformer
-    transformer = LogTransform(columns=["Speed_limit", "Number_of_Casualties", "Hour_of_Day"])
-    transformed_data = transformer.fit_transform(data)
 
-    # Assert equality
-    pd.testing.assert_frame_equal(transformed_data, expected_output)
+@pytest.mark.parametrize(
+    "data, expected",
+    [
+        (
+            pd.DataFrame({"col1": ["A", "B", "A"],
+                          "col2": ["X", "Y", "X"]}),
+            pd.DataFrame(
+                {
+                    "col1_A": [1, 0, 1],
+                    "col1_B": [0, 1, 0],
+                    "col2_X": [1, 0, 1],
+                    "col2_Y": [0, 1, 0],
+                }
+            ),
+        ),
+        (
+            pd.DataFrame({"col1": ["C", "C", "D"],
+                          "col2": ["Z", "Y", "Z"]}),
+            pd.DataFrame(
+                {
+                    "col1_C": [1, 1, 0],
+                    "col1_D": [0, 0, 1],
+                    "col2_Z": [1, 0, 1],
+                    "col2_Y": [0, 1, 0],
+                }
+            ),
+        ),
+    ],
+)
+def test_custom_one_hot_encoder(data, expected):
+    encoder = CustomOneHotEncoder()
+    transformed_data = encoder.fit_transform(data)
+    pd.testing.assert_frame_equal(transformed_data, expected)

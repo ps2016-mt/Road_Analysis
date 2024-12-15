@@ -12,7 +12,7 @@ dependencies:
 
   # Data handling
   - pandas
-  - numpy
+  - numpy=1.26.4
   - dask-ml
 
   # Visualisation
@@ -23,6 +23,7 @@ dependencies:
   - lightgbm
   - scikit-learn
   - glum
+  - dalex
 
   # Interactive environments
   - ipykernel
