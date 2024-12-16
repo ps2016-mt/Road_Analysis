@@ -74,7 +74,7 @@ def feature_analysis(
         top_n (int): Number of top important features to extract.
 
     Returns:
-        pd.DataFrame: Top N important features and their importance values.
+        list: A list of the top N feature names based on importance.
     """
     # Initialise Dalex Explainer
     explainer = dx.Explainer(
@@ -95,6 +95,9 @@ def feature_analysis(
         .reset_index(drop=True)
     )
 
+    # Extract top feature names as a list
+    top_feature_names = top_features["variable"].tolist()
+
     print("\nTop Features by Importance:")
     print(top_features[["variable", "dropout_loss"]])
 
@@ -105,3 +108,5 @@ def feature_analysis(
     plt.ylabel("Importance (Dropout Loss)")
     plt.tight_layout()
     plt.show()
+    
+    return top_feature_names
